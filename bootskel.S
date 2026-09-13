@@ -2,10 +2,17 @@
 .globl start
 start:
 movb $0x0e, %ah
-movb hello, %al  # what is moved into %al ?
+movw $hello, %si
 movb $0,    %bh
 movb $7,    %bl
+
+loop:
+movb (%si), %al
+cmpb $0, %al
+je stop
 int $0x10
+incw %si
+jmp loop
 
 stop:
 jmp stop

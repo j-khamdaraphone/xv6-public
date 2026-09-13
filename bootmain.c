@@ -79,8 +79,8 @@ readsect(void *dst, uint offset)
 {
   // Issue command.
   waitdisk();
-  outb(0x1F2, 1);   // count = 1
-  outb(0x1F3, offset);
+  outb(0x1F2, 1);   // how many sectors? count = 1
+  outb(0x1F3, offset); // which sector? the offset
   outb(0x1F4, offset >> 8);
   outb(0x1F5, offset >> 16);
   outb(0x1F6, (offset >> 24) | 0xE0);
@@ -88,7 +88,7 @@ readsect(void *dst, uint offset)
 
   // Read data.
   waitdisk();
-  insl(0x1F0, dst, SECTSIZE/4);
+  insl(0x1F0, dst, SECTSIZE/4); // insl reads 32 bits = 4 bytes at a time. 512 / 4 = 128 transfers
 }
 
 // Read 'count' bytes at 'offset' from kernel into physical address 'pa'.

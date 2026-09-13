@@ -4,14 +4,27 @@
 .code16
 .global start
 start:
+movb $0x0e, %ah
+movb $0, %bh
+movb $7, %bl
 
+print_loop:
+movb iterator, %bl
+movb $0, %bh
+movb hello(%bx), %al
+cmpb $0, %al
+je done_printing
+movb $7, %bl
+int $0x10
+incb iterator
+jmp print_loop
 
-
-
-// YOUR CODE GOES HERE
-
-
-
+done_printing:
+movb $0x00, %ah
+int $0x16
+movb $0x0, %ah
+movb $0x13, %al
+int $0x10
 
 # Change to 32-bit protected mode so we can run C code
 cli
@@ -34,7 +47,9 @@ call splashmain
 loop:
     jmp loop
 
-hello: .string "xv6 @ UIC rocks!"
+hello: .string "Welcome to xv6@UIC. Press any key to continue"
+
+iterator: .byte 0
 
 # Bootstrap GDT
 .p2align 2                                # force 4 byte alignment
